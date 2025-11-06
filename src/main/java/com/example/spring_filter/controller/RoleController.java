@@ -67,30 +67,20 @@ public class RoleController {
     }
 
     @PutMapping(path = APIUrl.PATH_VAR_ROLE_ID, produces = "application/json")
-    public ResponseEntity<CommonResponse<String>> updateRoleById(
+    public ResponseEntity<String> updateRoleById(
             @PathVariable("roleId") String roleId,
             @RequestBody RoleRequest roleRequest)
     {
         String role = roleService.updateRoleById(roleId, roleRequest);
 
-        CommonResponse<String> response = CommonResponse.<String>builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Successfully updated role")
-                .data(role)
-                .build();
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(role);
     }
 
     @DeleteMapping(path = APIUrl.PATH_VAR_ROLE_ID, produces = "application/json")
-    public ResponseEntity<CommonResponse<String>> deleteRoleById(
+    public ResponseEntity<String> deleteRoleById(
             @PathVariable("roleId") String roleId) {
         String role = roleService.deleteRoleById(roleId);
-        CommonResponse<String> response = CommonResponse.<String>builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Successfully deleted role")
-                .data(role)
-                .build();
-        return ResponseEntity.ok(response);
+
+        return ResponseEntity.ok(role);
     }
 }

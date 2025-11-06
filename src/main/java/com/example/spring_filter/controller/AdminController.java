@@ -94,18 +94,20 @@ public class AdminController {
     }
 
     @DeleteMapping(produces = "application/json", path = APIUrl.PATH_VAR_ADMIN_ID)
-    public ResponseEntity<CommonResponse<String>> deleteAdminById(
+    public ResponseEntity<String> deleteAdminById(
             @PathVariable("adminId") String adminId
     ){
         String adminById = adminService.deleteAdminById(adminId);
 
-        CommonResponse<String> response = CommonResponse.<String>builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Successfully deleted admin")
-                .data(adminById)
-                .build();
+        return ResponseEntity.ok(adminById);
+    }
 
-        return ResponseEntity.ok(response);
+    @PutMapping(produces = "application/json", path = APIUrl.PATH_VAR_ADMIN_ID)
+    public ResponseEntity<String> updateAdminById(
+            @PathVariable("adminId") String adminId,
+            @RequestParam("adminName") String adminName){
+        String admin = adminService.updateAdminById(adminId, adminName);
+        return ResponseEntity.ok(admin);
     }
 
 }
