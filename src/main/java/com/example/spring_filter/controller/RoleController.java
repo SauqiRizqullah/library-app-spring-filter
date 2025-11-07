@@ -30,6 +30,8 @@ public class RoleController {
             ) {
         RoleResponse roleResponse = roleService.createRole(roleRequest);
         CommonResponse<RoleResponse> commonResponse = CommonResponse.<RoleResponse>builder()
+                .statusCode(HttpStatus.CREATED.value())
+                .message("Role created successfully")
                 .data(roleResponse)
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponse);
@@ -41,6 +43,8 @@ public class RoleController {
     ) {
         Role role = roleService.getById(roleId);
         CommonResponse<Role> commonResponse = CommonResponse.<Role>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Role retrieved successfully")
                 .data(role)
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(commonResponse);
