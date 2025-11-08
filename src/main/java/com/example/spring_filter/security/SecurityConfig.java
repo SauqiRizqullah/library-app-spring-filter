@@ -14,7 +14,9 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests((requests) -> requests.anyRequest().authenticated());
+        httpSecurity.authorizeHttpRequests((requests) -> requests
+                .requestMatchers("/api/v1/books","/api/v1/books/*").permitAll()
+                .anyRequest().authenticated());
         httpSecurity.sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         httpSecurity.httpBasic(Customizer.withDefaults());
