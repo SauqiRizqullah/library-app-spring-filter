@@ -36,7 +36,7 @@ public class AdminServiceImpl implements AdminService {
         Role role = roleService.getById("R001");
 
         Admin admin = Admin.builder()
-                .role(role)
+//                .role(role)
                 .adminName(adminRequest.getAdminName())
                 .username(adminRequest.getUsername())
                 .password(adminRequest.getPassword())
@@ -57,7 +57,7 @@ public class AdminServiceImpl implements AdminService {
         }
         return AdminResponse.builder()
                 .adminId(id)
-                .roleId(admin.getRole().getRoleId())
+//                .roleId(admin.getRole().getRoleId())
                 .adminName(admin.getAdminName())
                 .username(admin.getUsername())
                 .email(admin.getEmail())

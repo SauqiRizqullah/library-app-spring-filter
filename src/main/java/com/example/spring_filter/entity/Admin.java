@@ -36,7 +36,7 @@ public class Admin implements UserDetails {
     private String password;
     @Column(name = "email", unique = true, nullable = false)
     private String email;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<Role> role;
 
     @Column(name = "is_enable")
