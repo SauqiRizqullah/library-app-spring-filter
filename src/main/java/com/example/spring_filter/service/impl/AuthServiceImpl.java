@@ -8,6 +8,7 @@ import com.example.spring_filter.entity.Admin;
 import com.example.spring_filter.entity.Role;
 import com.example.spring_filter.repository.AdminRepository;
 import com.example.spring_filter.service.AuthService;
+import com.example.spring_filter.service.JwtService;
 import com.example.spring_filter.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final RoleService roleService;
 
-    private final JwtServiceImpl jwtService;
+    private final JwtService jwtService;
 
     private final AuthenticationManager authenticationManager;
 

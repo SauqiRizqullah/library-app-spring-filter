@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -24,32 +25,49 @@ import java.io.IOException;
 @Slf4j
 public class AuthenticationFilter extends OncePerRequestFilter {
 
-    @Autowired
     private final JwtService jwtService;
-    @Autowired
     private final AdminService adminService;
     final String AUTH_HEADER = "Authorization";
+    private static final String BEARER_PREFIX = "Bearer ";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            String bearerToken = request.getHeader(AUTH_HEADER);
-            if (bearerToken != null && jwtService.verifyToken(bearerToken)) {
-                JwtClaims jwtClaims = jwtService.getClaimsByToken(bearerToken);
-                log.info("Get JWT Claims: {}", jwtClaims);
-                Admin admin = adminService.getById(jwtClaims.getAdminId());
-                log.info("Authenticated User: {}", admin);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        admin.getUsername(),
-                        null,
-                        admin.getAuthorities()
-                );
-                log.info("Authentication: {}", authentication);
+            String header = request.getHeader(AUTH_HEADER);
+            if(header != null && header.startsWith(BEARER_PREFIX)){
+                String token = header.substring(BEARER_PREFIX.length()).trim();
+                log.info(token);
+                if (jwtService.verifyToken(token)) {
+                    JwtClaims jwtClaims = jwtService.getClaimsByToken(token);
+                    log.info("Get JWT Claims: {}", jwtClaims);
+                    Admin admin = adminService.getById(jwtClaims.getAdminId());
+                    log.info("Authenticated User: {}", admin);
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                            admin.getUsername(),
+                            null,
+                            admin.getAuthorities()
+                    );
 
-                authentication.setDetails(new WebAuthenticationDetails(request));
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                log.info("Set User Authentication for {} - {}", admin.getAdminId(), admin.getUsername());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    log.info("Set User Authentication for {} - {}", admin.getAdminId(), admin.getUsername());
+                }
+//            if (bearerToken != null && jwtService.verifyToken(bearerToken)) {
+//                JwtClaims jwtClaims = jwtService.getClaimsByToken(bearerToken);
+//                log.info("Get JWT Claims: {}", jwtClaims);
+//                Admin admin = adminService.getById(jwtClaims.getAdminId());
+//                log.info("Authenticated User: {}", admin);
+//                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+//                        admin.getUsername(),
+//                        null,
+//                        admin.getAuthorities()
+//                );
+//                log.info("Authentication: {}", authentication);
+//
+//                authentication.setDetails(new WebAuthenticationDetails(request));
+//
+//                SecurityContextHolder.getContext().setAuthentication(authentication);
+//                log.info("Set User Authentication for {} - {}", admin.getAdminId(), admin.getUsername());
             }
         } catch (Exception e) {
             log.error("Cannot set user authentication: {}", e.getMessage());
